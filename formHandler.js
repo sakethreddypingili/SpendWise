@@ -54,3 +54,60 @@ export const initForm = (onAddTransaction) => {
         if (textValue === '') {
             textInput.classList.add('error-shake');
             setTimeout(() => textInput.classList.remove('error-shake'), 400);
+            hasError = true;
+        }
+
+        if (isNaN(rawAmount) || rawAmount <= 0) {
+            amountInput.classList.add('error-shake');
+            setTimeout(() => amountInput.classList.remove('error-shake'), 400);
+            hasError = true;
+        }
+
+        if (hasError) {
+            showError();
+            return;
+        }
+
+        hideError();
+
+        // Standardize positive for income, negative for expense
+        const finalAmount = activeType === 'income' ? Math.abs(rawAmount) : -Math.abs(rawAmount);
+
+        // Date timestamp
+        const currentDate = new Date().toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+
+        const newTransaction = {
+            id: Date.now(),
+            text: textValue,
+            amount: finalAmount,
+            category: categoryValue,
+            type: activeType,
+            date: currentDate
+        };
+
+        // Send to Captain
+        onAddTransaction(newTransaction);
+        
+        // Show success alert toast
+        showToast(`Transaction added successfully!`, 'success');
+
+        // Clear input form fields
+        textInput.value = '';
+        amountInput.value = '';
+        
+        // Reset defaults
+        selectType('income');
+    });
+};
+
+const showError = () => {
+    if (errorMsg) errorMsg.classList.remove('hide');
+};
+
+const hideError = () => {
+    if (errorMsg) errorMsg.classList.add('hide');
+};

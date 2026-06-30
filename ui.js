@@ -53,3 +53,58 @@ export const showToast = (message, type = 'success') => {
     if (type === 'info')  iconClass = 'bi-info-circle-fill';
 
     toast.innerHTML = `<i class="bi ${iconClass}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('toast-fade-out');
+        toast.addEventListener('transitionend', () => toast.remove());
+    }, 3000);
+};
+
+// ─── Delete modal ─────────────────────────────────────────────────────────────
+export const showDeleteModal = (onConfirm) => {
+    const modal      = document.getElementById('delete-modal');
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    const cancelBtn  = document.getElementById('cancel-delete-btn');
+    if (!modal || !confirmBtn || !cancelBtn) return;
+
+    modal.classList.remove('hide');
+    modal.classList.add('modal-active');
+
+    const closeModal = () => {
+        modal.classList.remove('modal-active');
+        modal.classList.add('hide');
+        confirmBtn.removeEventListener('click', handleConfirm);
+        cancelBtn.removeEventListener('click', handleCancel);
+    };
+    const handleConfirm = () => { onConfirm(); closeModal(); };
+    const handleCancel  = () => closeModal();
+
+    confirmBtn.addEventListener('click', handleConfirm);
+    cancelBtn.addEventListener('click',  handleCancel);
+};
+
+// ─── Doughnut chart (dashboard) ───────────────────────────────────────────────
+export const initChart = () => {
+    const canvas = document.getElementById('spending-chart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Income', 'Expense'],
+            datasets: [{
+                data: [0, 0],
+                backgroundColor: ['#10b981', '#ef4444'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { font: { family: 'Inter, sans-serif', size: 12 }, color: '#64748b' }

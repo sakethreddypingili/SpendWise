@@ -24,3 +24,12 @@ export function initTransactions() {
   if (cached) {
     try {
       transactions = JSON.parse(cached);
+    } catch (e) {
+      transactions = [];
+    }
+  } else {
+    transactions = [];
+  }
+}
+
+initTransactions();

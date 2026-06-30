@@ -1,0 +1,8 @@
+app.js
+calculations.js
+domRenderer.js
+formHandler.js
+state.js
+ui.js
+.vscode/
+.DS_Store
